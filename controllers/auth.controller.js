@@ -1,6 +1,7 @@
 const validator = require("validator");
 const bcrypt = require("bcrypt");
 const userModel = require("../models/user.model");
+const createToken = require("../helpers/token.helper");
 
 const createUser = async (req, res) => {
   try {
@@ -41,7 +42,10 @@ const createUser = async (req, res) => {
       birthYear,
     });
 
-    res.status(201).json(user);
+    //create a new token
+    const token = createToken(user._id);
+
+    res.status(201).json({ user, token });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -60,14 +64,17 @@ const loginUser = async (req, res) => {
     //check user existence
     const user = await userModel.findOne({ email });
 
-    if(!user) throw new Error("User not found.")
+    if (!user) throw new Error("User not found.");
 
     //password decryption
-    const match = await bcrypt.compare(password, user.password)
+    const match = await bcrypt.compare(password, user.password);
 
-    if (!match) throw new Error("User not found.")
+    if (!match) throw new Error("User not found.");
 
-    res.status(200).json(user)
+    //create a new token
+    const token = createToken(user._id);
+
+    res.status(201).json({ user, token });
   } catch (error) {}
 };
 

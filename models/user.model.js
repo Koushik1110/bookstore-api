@@ -9,6 +9,12 @@ const userSchema = new mongoose.Schema(
     address: { type: String },
     bio: { type: String },
     birthYear: { type: String },
+    role:{
+      type:String,
+      enum:["user","admin"],
+      default: "user",
+      required:true,
+    },
     books: [
       {
         type: mongoose.Schema.Types.ObjectId,

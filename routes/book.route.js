@@ -6,13 +6,14 @@ const {
   updateABook,
   deleteABook,
 } = require("../controllers/book.controller");
+const isAuthenticated = require("../middlewares/auth.middleware");
 
 const router = express.Router();
 
-router.post("/", createBook);
 router.get("/", getAllBooks);
 router.get("/:bookid", getABook);
-router.put("/:bookid", updateABook);
-router.delete("/:bookid", deleteABook);
+router.post("/", isAuthenticated, createBook); // user
+router.put("/:bookid", isAuthenticated, updateABook); // user
+router.delete("/:bookid", isAuthenticated, deleteABook); // user
 
 module.exports = router;
